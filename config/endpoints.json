@@ -1,0 +1,17 @@
+[
+    {
+        "name": "Api HTTP Check",
+        "url": "http://localhost:8080/ping",
+        "type": "http"
+    },
+    {
+        "name": "Api DNS Check",
+        "url": "http://localhost/",
+        "type": "dns"
+    },
+    {
+        "name": "Api TCP Check",
+        "url": "http://localhost:8080/ping",
+        "type": "tcp"
+    }
+]

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Status Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex flex-col min-h-screen justify-between">
+    <main class="px-4 py-8">
+        <h1 class="text-2xl font-bold mb-4 text-center">Status Page</h1>
+        {{range .services}}
+        <div class="bg-white shadow rounded-lg p-4 mb-4 flex justify-between items-center w-full">
+            <h2 class="text-xl font-bold mb-2">{{.Name}}</h2>
+            {{if eq .Status "up"}}
+            <div class="text-center text-green-500 mb-2">
+                <span>&#10003;</span>
+            </div>
+            {{else}}
+            <div class="text-center text-red-500 mb-2">
+                <span>&#10007;</span>
+            </div>
+            {{end}}
+        </div>
+        {{end}}
+    </main>
+</body>
+</html>
