@@ -1,13 +1,31 @@
 # Status Page Middleware
 
-Status Page middleware is based on Gin-Gonic framework and used to generate simple status page based on JSON configuration file and environment variables.
+Status Page middleware is used to generate a simple status page for your application based on a JSON configuration file and environment variables. It allows you to define multiple endpoints to monitor and display their status on a single page. The middleware periodically checks the status of each endpoint and updates the status page accordingly. It also provides options to customize the look and feel of the status page and integrate with popular dashboard tools for visualizing the status and metrics.
+
+The unique functionality of this status page is that it can be used for any application which uses Gin framework. It's also highly flexible and can be customized by the development team themselves.
 
 ## Table of Contents
 
+- [Roadmap](#roadmap)
 - [Quick Start](#quick-start)
 - [Using Middleware with Viper Configuration](#using-middleware-with-viper-configuration)
 - [Contributing](#contributing)
 - [License](#license)
+
+## Roadmap
+
+- Add embed support for the status page template
+- Add more advanced health checks
+    - Health checks with Authentication
+    - Health checks with Custom Headers
+    - Health checks via API Request against the endpoints
+- Add support for more protocols
+    - HTTPS
+    - FTP
+    - SSH
+    - WebSocket
+- ChatOps - Send notifications when a service goes down or recovers
+- Make more comprehensive UI for the status page
 
 ## Quick Start
 
