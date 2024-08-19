@@ -2,6 +2,13 @@
 
 Status Page middleware is based on Gin-Gonic framework and used to generate simple status page based on JSON configuration file and environment variables.
 
+## Table of Contents
+
+- [Quick Start](#quick-start)
+- [Using Middleware with Viper Configuration](#using-middleware-with-viper-configuration)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## Quick Start
 
 **1. Configure your endpoints in `config.json` file**
@@ -162,3 +169,11 @@ func main() {
 ```bash
 go run main.go
 ```
+
+## Contributing
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for detailed process for submitting pull requests to us.
+
+## License
+
+This project is licensed under the Apache 2.0 License - see the [LICENSE.md](LICENSE.md) file for details.
