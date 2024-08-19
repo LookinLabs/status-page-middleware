@@ -73,7 +73,13 @@ func main() {
 }
 ```
 
-**5. Run your application**
+**5. Write the status page**
+
+Write the status page via HTML template that you've specified in `STATUS_PAGE_TEMPLATE_PATH` environment variable.
+
+By default you can use the [Production Ready HTML Template](view/html/status.html) for your status page.
+
+**6. Run your application**
 
 ```bash
 make run
@@ -165,7 +171,14 @@ func main() {
 }
 ```
 
-**4. Run your application**
+**4. Write the status page**
+
+Write the status page via HTML template that you've specified in `STATUS_PAGE_TEMPLATE_PATH` environment variable.
+
+By default you can use the [Production Ready HTML Template](view/html/status.html) for your status page.
+
+
+**5. Run your application**
 ```bash
 go run main.go
 ```
