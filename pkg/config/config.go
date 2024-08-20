@@ -5,8 +5,8 @@ import (
 	"path/filepath"
 
 	"github.com/joho/godotenv"
-	"github.com/lookinlabs/status-page-middleware/model"
 	json "github.com/lookinlabs/status-page-middleware/pkg/json"
+	"github.com/lookinlabs/status-page-middleware/pkg/model"
 	"github.com/spf13/viper"
 )
 

@@ -7,9 +7,8 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
-	"github.com/lookinlabs/status-page-middleware/config"
-	"github.com/lookinlabs/status-page-middleware/controller"
-	"github.com/lookinlabs/status-page-middleware/middleware"
+	"github.com/lookinlabs/status-page-middleware/pkg/config"
+	"github.com/lookinlabs/status-page-middleware/pkg/endpoints"
 )
 
 func TestStatusPageMiddleware(testCase *testing.T) {
@@ -20,17 +19,17 @@ func TestStatusPageMiddleware(testCase *testing.T) {
 	router := gin.Default()
 
 	cfg := &config.Environments{
-		StatusPageConfigPath: "../config/endpoints.json",
+		StatusPageConfigPath: "../pkg/config/endpoints.json",
 	}
 
 	// Load HTML templates
 	router.LoadHTMLGlob("../view/html/status.html")
 
 	// Use middleware
-	router.Use(middleware.StatusPage(cfg))
+	router.Use(endpoints.StatusPage(cfg))
 
 	// Define a test endpoint
-	router.GET("/ping", controller.Ping)
+	router.GET("/ping", endpoints.Ping)
 
 	// Test the /ping endpoint
 	testCase.Run("Ping Endpoint", func(pingCase *testing.T) {

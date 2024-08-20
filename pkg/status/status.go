@@ -1,14 +1,14 @@
-package controller
+package status
 
 import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/lookinlabs/status-page-middleware/config"
 	"github.com/lookinlabs/status-page-middleware/pkg/checks"
+	"github.com/lookinlabs/status-page-middleware/pkg/config"
 )
 
-func ServiceStatuses(cfg *config.Environments, ctx *gin.Context) {
+func Services(cfg *config.Environments, ctx *gin.Context) {
 	services, err := config.LoadConfig(cfg.StatusPageConfigPath)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
@@ -33,11 +33,5 @@ func ServiceStatuses(cfg *config.Environments, ctx *gin.Context) {
 
 	ctx.HTML(http.StatusOK, "status.html", gin.H{
 		"services": services,
-	})
-}
-
-func Ping(ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, gin.H{
-		"message": "pong",
 	})
 }

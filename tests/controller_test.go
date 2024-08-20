@@ -7,8 +7,9 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
-	"github.com/lookinlabs/status-page-middleware/config"
-	"github.com/lookinlabs/status-page-middleware/controller"
+	"github.com/lookinlabs/status-page-middleware/pkg/config"
+	"github.com/lookinlabs/status-page-middleware/pkg/endpoints"
+	"github.com/lookinlabs/status-page-middleware/pkg/status"
 )
 
 func TestControllers(testCase *testing.T) {
@@ -25,7 +26,7 @@ func TestControllers(testCase *testing.T) {
 
 	runTest("Ping", func(testPing *testing.T) {
 		router := gin.Default()
-		router.GET("/ping", controller.Ping)
+		router.GET("/ping", endpoints.Ping)
 
 		response := httptest.NewRecorder()
 		request, _ := http.NewRequest(http.MethodGet, "/ping", nil)
@@ -44,10 +45,10 @@ func TestControllers(testCase *testing.T) {
 		router.LoadHTMLGlob("../view/html/status.html")
 
 		cfg := &config.Environments{
-			StatusPageConfigPath: "../config/endpoints.json",
+			StatusPageConfigPath: "../pkg/config/endpoints.json",
 		}
 		router.GET("/status", func(ctx *gin.Context) {
-			controller.ServiceStatuses(cfg, ctx)
+			status.Services(cfg, ctx)
 		})
 
 		response := httptest.NewRecorder()
