@@ -9,7 +9,7 @@ import (
 )
 
 func Services(cfg *config.Environments, ctx *gin.Context) {
-	services, err := config.LoadConfig(cfg.StatusPageConfigPath)
+	services, err := config.LoadEndpoints(cfg.StatusPageConfigPath)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Error loading config",

@@ -16,7 +16,7 @@ type Environments struct {
 	StatusPagePath         string
 }
 
-func LoadEnvironmentVariables() (*Environments, error) {
+func LoadStatusPage() (*Environments, error) {
 	viper.SetConfigFile(".env")
 
 	if err := viper.ReadInConfig(); err == nil {
@@ -34,7 +34,7 @@ func LoadEnvironmentVariables() (*Environments, error) {
 	}, nil
 }
 
-func LoadConfig(filename string) ([]model.Service, error) {
+func LoadEndpoints(filename string) ([]model.Service, error) {
 	file, err := os.Open(filepath.Clean(filename))
 	if err != nil {
 		return nil, err
