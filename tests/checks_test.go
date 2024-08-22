@@ -29,21 +29,21 @@ func TestChecks(testCase *testing.T) {
 			Username: "your_username",
 			Password: "your_password",
 		}
-		status := checks.HTTP("http://localhost:8080/ping", method, headers, body, basicAuth)
+		status, _ := checks.HTTP("http://localhost:8080/ping", method, headers, body, basicAuth)
 		if status != "up" && status != "down" {
 			httpCase.Errorf("Expected status to be 'up' or 'down', got %s", status)
 		}
 	})
 
 	runTest("DNS Check", func(dnsCase *testing.T) {
-		status := checks.DNS("http://localhost:3000/ping")
+		status, _ := checks.DNS("http://localhost:3000/ping")
 		if status != "up" && status != "down" {
 			dnsCase.Errorf("Expected status to be 'up' or 'down', got %s", status)
 		}
 	})
 
 	runTest("TCP Check", func(tcpCase *testing.T) {
-		status := checks.TCP("http://localhost:3000")
+		status, _ := checks.TCP("http://localhost:3000")
 		if status != "up" && status != "down" {
 			tcpCase.Errorf("Expected status to be 'up' or 'down', got %s", status)
 		}

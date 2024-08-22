@@ -47,7 +47,12 @@
     },
     {
         "name": "Api TCP Check",
-        "url": "http://localhost:8080/ping",
+        "url": "http://localhost:8081/ping",
+        "type": "tcp"
+    },
+    {
+        "name": "Api 2 TCP Check",
+        "url": "http://localhost:8082/ping",
         "type": "tcp"
     }
 ]

@@ -7,8 +7,8 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
+	controller "github.com/lookinlabs/status-page-middleware/controller"
 	"github.com/lookinlabs/status-page-middleware/pkg/config"
-	"github.com/lookinlabs/status-page-middleware/pkg/endpoints"
 	"github.com/lookinlabs/status-page-middleware/pkg/status"
 )
 
@@ -26,7 +26,7 @@ func TestControllers(testCase *testing.T) {
 
 	runTest("Ping", func(testPing *testing.T) {
 		router := gin.Default()
-		router.GET("/ping", endpoints.Ping)
+		router.GET("/ping", controller.Ping)
 
 		response := httptest.NewRecorder()
 		request, _ := http.NewRequest(http.MethodGet, "/ping", nil)

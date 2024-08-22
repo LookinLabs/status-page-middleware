@@ -3,27 +3,27 @@ package checks
 import (
 	"bytes"
 	"encoding/base64"
-	"log"
 	"net"
 	"net/http"
 	"net/url"
 	"time"
 
+	"github.com/lookinlabs/status-page-middleware/pkg/logger"
 	"github.com/lookinlabs/status-page-middleware/pkg/model"
 )
 
-func HTTP(urlString, method string, headers map[string]string, requestBody string, basicAuth *model.BasicAuth) string {
+func HTTP(urlString, method string, headers map[string]string, requestBody string, basicAuth *model.BasicAuth) (string, error) {
 	parsedURL, err := url.ParseRequestURI(urlString)
 	if err != nil {
-		log.Printf("StatusMiddleware: Invalid URL: %v", err)
-		return "down"
+		logger.Errorf("StatusMiddleware: Invalid URL: %v", err)
+		return "down", err
 	}
 
 	client := &http.Client{}
 	req, err := http.NewRequest(method, parsedURL.String(), bytes.NewBuffer([]byte(requestBody)))
 	if err != nil {
-		log.Printf("StatusMiddleware: Error creating request: %v", err)
-		return "down"
+		logger.Errorf("StatusMiddleware: Error creating request: %v", err)
+		return "down", err
 	}
 
 	for key, value := range headers {
@@ -32,54 +32,55 @@ func HTTP(urlString, method string, headers map[string]string, requestBody strin
 
 	// Set basic authentication if provided
 	if basicAuth != nil {
-		log.Printf("StatusMiddleware: Setting basic auth: %s:%s", basicAuth.Username, basicAuth.Password)
 		auth := basicAuth.Username + ":" + basicAuth.Password
 		encodedAuth := base64.StdEncoding.EncodeToString([]byte(auth))
 		req.Header.Set("Authorization", "Basic "+encodedAuth)
-		log.Printf("StatusMiddleware: Authorization header set: Basic %s", encodedAuth)
 	} else {
-		log.Printf("StatusMiddleware: No basic auth provided")
+		logger.Infof("StatusMiddleware: No basic authentication provided for %s", urlString)
 	}
 
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Printf("StatusMiddleware: Error performing request: %v", err)
-		return "down"
+		logger.Errorf("StatusMiddleware: Error sending request: %v", err)
+		return "down", err
 	}
+
 	if resp.StatusCode != http.StatusOK {
-		log.Printf("StatusMiddleware: Unexpected status code: %d", resp.StatusCode)
-		return "down"
+		logger.Warnf("StatusMiddleware: Non-200 status code: %d", resp.StatusCode)
+		return "down", err
 	}
+
 	defer func() {
 		if err := resp.Body.Close(); err != nil {
-			log.Printf("StatusMiddleware: Error closing response body: %v", err)
+			logger.Errorf("StatusMiddleware: Error closing response body: %v", err)
 		}
 	}()
 
-	return "up"
+	return "up", nil
 }
 
-func DNS(rawURL string) string {
+func DNS(rawURL string) (string, error) {
 	parsedURL, err := url.Parse(rawURL)
 	if err != nil {
-		log.Printf("StatusMiddleware: Invalid URL: %v", err)
-		return "down"
+		logger.Errorf("StatusMiddleware: Invalid URL: %v", err)
+		return "down", err
 	}
+
 	host := parsedURL.Hostname()
 	_, err = net.LookupHost(host)
 	if err != nil {
-		log.Printf("StatusMiddleware: DNS lookup failed for host: %v", err)
-		return "down"
+		logger.Errorf("StatusMiddleware: DNS lookup failed: %v", err)
+		return "down", err
 	}
 
-	return "up"
+	return "up", nil
 }
 
-func TCP(rawURL string) string {
+func TCP(rawURL string) (string, error) {
 	parsedURL, err := url.Parse(rawURL)
 	if err != nil {
-		log.Printf("StatusMiddleware: Invalid URL: %v", err)
-		return "down"
+		logger.Errorf("StatusMiddleware: Invalid URL: %v", err)
+		return "down", err
 	}
 
 	host := parsedURL.Hostname()
@@ -91,13 +92,14 @@ func TCP(rawURL string) string {
 	address := net.JoinHostPort(host, port)
 	conn, err := net.DialTimeout("tcp", address, 5*time.Second)
 	if err != nil {
-		log.Printf("StatusMiddleware: TCP connection failed: %v", err)
-		return "down"
+		logger.Errorf("StatusMiddleware: TCP connection failed: %v", err)
+		return "down", err
 	}
 
 	if err := conn.Close(); err != nil {
-		log.Printf("StatusMiddleware: Error closing connection: %v", err)
+		logger.Errorf("StatusMiddleware: Error closing TCP connection: %v", err)
+		return "up", err
 	}
 
-	return "up"
+	return "up", nil
 }

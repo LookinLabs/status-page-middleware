@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
+	controller "github.com/lookinlabs/status-page-middleware/controller"
 	"github.com/lookinlabs/status-page-middleware/pkg/config"
 	"github.com/lookinlabs/status-page-middleware/pkg/endpoints"
 )
@@ -29,7 +30,7 @@ func TestStatusPageMiddleware(testCase *testing.T) {
 	router.Use(endpoints.StatusPage(cfg))
 
 	// Define a test endpoint
-	router.GET("/ping", endpoints.Ping)
+	router.GET("/ping", controller.Ping)
 
 	// Test the /ping endpoint
 	testCase.Run("Ping Endpoint", func(pingCase *testing.T) {

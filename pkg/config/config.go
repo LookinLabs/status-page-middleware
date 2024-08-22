@@ -6,6 +6,7 @@ import (
 
 	"github.com/joho/godotenv"
 	json "github.com/lookinlabs/status-page-middleware/pkg/json"
+	"github.com/lookinlabs/status-page-middleware/pkg/logger"
 	"github.com/lookinlabs/status-page-middleware/pkg/model"
 	"github.com/spf13/viper"
 )
@@ -21,6 +22,7 @@ func LoadStatusPage() (*Environments, error) {
 
 	if err := viper.ReadInConfig(); err == nil {
 		if err := godotenv.Load(); err != nil {
+			logger.Errorf("StatusMiddleware: Error loading .env file: %v", err)
 			return nil, err
 		}
 	}
@@ -37,18 +39,21 @@ func LoadStatusPage() (*Environments, error) {
 func LoadEndpoints(filename string) ([]model.Service, error) {
 	file, err := os.Open(filepath.Clean(filename))
 	if err != nil {
+		logger.Errorf("StatusMiddleware: Error opening file: %v", err)
 		return nil, err
 	}
 	defer file.Close()
 
 	data, err := os.ReadFile(filename)
 	if err != nil {
+		logger.Errorf("StatusMiddleware: Error reading file: %v", err)
 		return nil, err
 	}
 
 	var services []model.Service
 	err = json.Decode(data, &services)
 	if err != nil {
+		logger.Errorf("StatusMiddleware: Error decoding JSON: %v", err)
 		return nil, err
 	}
 
