@@ -1,8 +1,9 @@
 package tests
 
 import (
-	"encoding/json"
 	"testing"
+
+	json "github.com/lookinlabs/status-page-middleware/pkg/json"
 )
 
 func TestJSONOperations(testCase *testing.T) {
@@ -11,7 +12,7 @@ func TestJSONOperations(testCase *testing.T) {
 	go func() {
 		testCase.Run("Encode JSON", func(encodeCase *testing.T) {
 			input := map[string]string{"key": "value"}
-			_, err := json.Marshal(input)
+			_, err := json.Encode(input)
 			if err != nil {
 				encodeCase.Errorf("Expected no error, got %v", err)
 			}
@@ -23,7 +24,7 @@ func TestJSONOperations(testCase *testing.T) {
 		testCase.Run("Decode JSON", func(decodeCase *testing.T) {
 			input := []byte(`{"key": "value"}`)
 			var output map[string]string
-			err := json.Unmarshal(input, &output)
+			err := json.Decode(input, &output)
 			if err != nil {
 				decodeCase.Errorf("Expected no error, got %v", err)
 			}
