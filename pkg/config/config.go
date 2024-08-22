@@ -23,15 +23,13 @@ func LoadStatusPage() (*Environments, error) {
 	if err := viper.ReadInConfig(); err == nil {
 		if err := godotenv.Load(); err != nil {
 			logger.Errorf("StatusMiddleware: Error loading .env file: %v", err)
-			logger.Infof("StatusMiddleware: Using default environment variables")
-
-			viper.SetDefault("STATUS_PAGE_CONFIG_PATH", "config/endpoints.json")
-			viper.SetDefault("STATUS_PAGE_TEMPLATE_PATH", "view/html/status.html")
-			viper.SetDefault("STATUS_PAGE_PATH", "/status")
-
 			return nil, err
 		}
 	}
+
+	viper.SetDefault("STATUS_PAGE_CONFIG_PATH", "config/endpoints.json")
+	viper.SetDefault("STATUS_PAGE_TEMPLATE_PATH", "view/html/status.html")
+	viper.SetDefault("STATUS_PAGE_PATH", "/status")
 
 	viper.AutomaticEnv()
 
