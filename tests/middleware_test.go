@@ -3,6 +3,7 @@ package tests
 import (
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
 
@@ -13,6 +14,11 @@ import (
 )
 
 func TestStatusPageMiddleware(testCase *testing.T) {
+	// Set environment variables for the test
+	os.Setenv("STATUS_PAGE_CONFIG_PATH", "../pkg/config/endpoints.json")
+	os.Setenv("STATUS_PAGE_TEMPLATE_PATH", "../view/html/status.html")
+	os.Setenv("STATUS_PAGE_PATH", "/status")
+
 	// Set Gin to Test Mode
 	gin.SetMode(gin.TestMode)
 
@@ -20,8 +26,9 @@ func TestStatusPageMiddleware(testCase *testing.T) {
 	router := gin.Default()
 
 	cfg := &config.Environments{
-		StatusPageConfigPath:   "../pkg/config/endpoints.json",
-		StatusPageTemplatePath: "../view/html/status.html",
+		StatusPageConfigPath:   os.Getenv("STATUS_PAGE_CONFIG_PATH"),
+		StatusPageTemplatePath: os.Getenv("STATUS_PAGE_TEMPLATE_PATH"),
+		StatusPagePath:         os.Getenv("STATUS_PAGE_PATH"),
 	}
 
 	// Use middleware
