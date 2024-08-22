@@ -32,11 +32,9 @@ func init() {
 	}
 
 	config := zap.Config{
-		Encoding:         "json",
-		EncoderConfig:    encoderConfig,
-		OutputPaths:      []string{"stdout"},
-		ErrorOutputPaths: []string{"stderr"},
-		Level:            zap.NewAtomicLevelAt(zap.InfoLevel),
+		Encoding:      "json",
+		EncoderConfig: encoderConfig,
+		Level:         zap.NewAtomicLevelAt(zap.InfoLevel),
 	}
 
 	rawLogger, err := config.Build()
@@ -45,7 +43,7 @@ func init() {
 	}
 	log = rawLogger.Sugar()
 	defer func() {
-		if err := rawLogger.Sync(); err != nil && err.Error() != "sync /dev/stdout: inappropriate ioctl for device" {
+		if err := rawLogger.Sync(); err != nil {
 			panic(err)
 		}
 	}()
