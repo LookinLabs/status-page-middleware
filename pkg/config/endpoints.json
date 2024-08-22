@@ -21,6 +21,26 @@
         "type": "http"
     },
     {
+        "name": "Api v3 Ping Check",
+        "url": "http://localhost:8080/v3/ping",
+        "type": "http",
+        "request": {
+            "method": "POST",
+            "headers": {
+                "Message": "ping",
+                "PingPong": "pong",
+                "Content-Type": "application/json"
+            },
+            "body": {
+                "message": "ping"
+            }
+        },
+        "basic_auth": {
+            "username": "admin",
+            "password": ""
+        }
+    },
+    {
         "name": "Api DNS Check",
         "url": "http://localhost/",
         "type": "dns"

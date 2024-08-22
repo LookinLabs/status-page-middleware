@@ -15,14 +15,14 @@ import (
 func HTTP(urlString, method string, headers map[string]string, requestBody string, basicAuth *model.BasicAuth) string {
 	parsedURL, err := url.ParseRequestURI(urlString)
 	if err != nil {
-		log.Printf("Invalid URL: %v", err)
+		log.Printf("StatusMiddleware: Invalid URL: %v", err)
 		return "down"
 	}
 
 	client := &http.Client{}
 	req, err := http.NewRequest(method, parsedURL.String(), bytes.NewBuffer([]byte(requestBody)))
 	if err != nil {
-		log.Printf("Error creating request: %v", err)
+		log.Printf("StatusMiddleware: Error creating request: %v", err)
 		return "down"
 	}
 
@@ -32,23 +32,27 @@ func HTTP(urlString, method string, headers map[string]string, requestBody strin
 
 	// Set basic authentication if provided
 	if basicAuth != nil {
+		log.Printf("StatusMiddleware: Setting basic auth: %s:%s", basicAuth.Username, basicAuth.Password)
 		auth := basicAuth.Username + ":" + basicAuth.Password
 		encodedAuth := base64.StdEncoding.EncodeToString([]byte(auth))
 		req.Header.Set("Authorization", "Basic "+encodedAuth)
+		log.Printf("StatusMiddleware: Authorization header set: Basic %s", encodedAuth)
+	} else {
+		log.Printf("StatusMiddleware: No basic auth provided")
 	}
 
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Printf("Error performing request: %v", err)
+		log.Printf("StatusMiddleware: Error performing request: %v", err)
 		return "down"
 	}
 	if resp.StatusCode != http.StatusOK {
-		log.Printf("Unexpected status code: %d", resp.StatusCode)
+		log.Printf("StatusMiddleware: Unexpected status code: %d", resp.StatusCode)
 		return "down"
 	}
 	defer func() {
 		if err := resp.Body.Close(); err != nil {
-			log.Printf("Error closing response body: %v", err)
+			log.Printf("StatusMiddleware: Error closing response body: %v", err)
 		}
 	}()
 
@@ -58,13 +62,13 @@ func HTTP(urlString, method string, headers map[string]string, requestBody strin
 func DNS(rawURL string) string {
 	parsedURL, err := url.Parse(rawURL)
 	if err != nil {
-		log.Printf("Invalid URL: %v", err)
+		log.Printf("StatusMiddleware: Invalid URL: %v", err)
 		return "down"
 	}
 	host := parsedURL.Hostname()
 	_, err = net.LookupHost(host)
 	if err != nil {
-		log.Printf("DNS lookup failed for host: %v", err)
+		log.Printf("StatusMiddleware: DNS lookup failed for host: %v", err)
 		return "down"
 	}
 
@@ -74,7 +78,7 @@ func DNS(rawURL string) string {
 func TCP(rawURL string) string {
 	parsedURL, err := url.Parse(rawURL)
 	if err != nil {
-		log.Printf("Invalid URL: %v", err)
+		log.Printf("StatusMiddleware: Invalid URL: %v", err)
 		return "down"
 	}
 
@@ -87,12 +91,12 @@ func TCP(rawURL string) string {
 	address := net.JoinHostPort(host, port)
 	conn, err := net.DialTimeout("tcp", address, 5*time.Second)
 	if err != nil {
-		log.Printf("TCP connection failed: %v", err)
+		log.Printf("StatusMiddleware: TCP connection failed: %v", err)
 		return "down"
 	}
 
 	if err := conn.Close(); err != nil {
-		log.Printf("Error closing connection: %v", err)
+		log.Printf("StatusMiddleware: Error closing connection: %v", err)
 	}
 
 	return "up"

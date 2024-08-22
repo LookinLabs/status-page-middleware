@@ -14,6 +14,7 @@
 
 // 	router.GET("/ping", controller.Ping)
 // 	router.POST("/v2/ping", controller.PingV2)
+// 	router.POST("/v3/ping", controller.PingV3)
 // 	config, err := config.LoadStatusPage()
 // 	if err != nil {
 // 		log.Fatalf("failed to load status page environment variables: %v", err)
