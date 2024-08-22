@@ -1,5 +1,4 @@
-name: Verify Code
-run-name: Verify code changes
+name: Verify & Release
 on:
   pull_request:
     types:
@@ -9,7 +8,7 @@ on:
       - closed
   push:
     tags:
-      - 'v[0-9].[0-9].[0-9][0-9]'
+      - 'v[0-9]+.[0-9]+.[0-9]+'
 
 env:
   GOPROXY: https://proxy.golang.org
@@ -41,11 +40,23 @@ jobs:
             skip-cache: false
             skip-pkg-cache: true
 
+    verify_backend_functionality:
+      name: Verify Backend Code Quality
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v4
+
+        - uses: actions/setup-go@v5
+          with:
+            go-version: '1.22'
+
         - name: Verify functionality
           run: go test -v ./tests/...
 
     publish_release:
-      # if: github.repository == 'LookinLabs/status-page-middleware'  
+      needs: 
+        - verify_backend_quality
+        - verify_backend_functionality
       runs-on: ubuntu-latest
       steps:
         - name: Set version env
@@ -57,6 +68,6 @@ jobs:
             name: ${{ env.RELEASE_VERSION }}
             tag: ${{ env.RELEASE_VERSION }}
             version: ${{ env.RELEASE_VERSION }}
-            publish: true
+            publish: false
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
