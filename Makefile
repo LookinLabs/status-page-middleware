@@ -17,7 +17,10 @@ linter:
 gosec:
 	@gosec -quiet ./...
 
-tests:
+test:
 	go test -v ./tests/...
 
-validate: linter gosec
+validate: 
+	make linter
+	make gosec
+	make test

@@ -3,15 +3,22 @@ package tests
 import (
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
 
 	"github.com/gin-gonic/gin"
+	controller "github.com/lookinlabs/status-page-middleware/controller"
 	"github.com/lookinlabs/status-page-middleware/pkg/config"
 	"github.com/lookinlabs/status-page-middleware/pkg/endpoints"
 )
 
 func TestStatusPageMiddleware(testCase *testing.T) {
+	// Set environment variables for the test
+	testCase.Setenv("STATUS_PAGE_CONFIG_PATH", "../pkg/config/endpoints.json")
+	testCase.Setenv("STATUS_PAGE_TEMPLATE_PATH", "../view/html/status.html")
+	testCase.Setenv("STATUS_PAGE_PATH", "/status")
+
 	// Set Gin to Test Mode
 	gin.SetMode(gin.TestMode)
 
@@ -19,17 +26,16 @@ func TestStatusPageMiddleware(testCase *testing.T) {
 	router := gin.Default()
 
 	cfg := &config.Environments{
-		StatusPageConfigPath: "../pkg/config/endpoints.json",
+		StatusPageConfigPath:   os.Getenv("STATUS_PAGE_CONFIG_PATH"),
+		StatusPageTemplatePath: os.Getenv("STATUS_PAGE_TEMPLATE_PATH"),
+		StatusPagePath:         os.Getenv("STATUS_PAGE_PATH"),
 	}
 
-	// Load HTML templates
-	router.LoadHTMLGlob("../view/html/status.html")
-
 	// Use middleware
-	router.Use(endpoints.StatusPage(cfg))
+	endpoints.StatusPageMiddleware(router)
 
 	// Define a test endpoint
-	router.GET("/ping", endpoints.Ping)
+	router.GET("/ping", controller.Ping)
 
 	// Test the /ping endpoint
 	testCase.Run("Ping Endpoint", func(pingCase *testing.T) {

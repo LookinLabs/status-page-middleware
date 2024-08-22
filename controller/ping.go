@@ -8,7 +8,7 @@ import (
 )
 
 func Ping(ctx *gin.Context) {
-	ctx.String(http.StatusOK, "pong")
+	ctx.JSON(http.StatusOK, gin.H{"message": "pong"})
 }
 
 func PingV2(ctx *gin.Context) {
@@ -34,13 +34,14 @@ func PingV3(ctx *gin.Context) {
 	username, password, hasAuth := ctx.Request.BasicAuth()
 	if !hasAuth || username != "admin" || password != "" {
 		var errorMessage string
-		if !hasAuth {
+		switch {
+		case !hasAuth:
 			errorMessage = "No authentication provided"
 			log.Println("Ping v3 endpoint: No authentication provided")
-		} else if username != "admin" {
+		case username != "admin":
 			errorMessage = "Invalid username"
 			log.Println("Ping v3 endpoint: Invalid username")
-		} else if password != "" {
+		case password != "":
 			errorMessage = "Password should be empty"
 			log.Println("Ping v3 endpoint: Password should be empty")
 		}

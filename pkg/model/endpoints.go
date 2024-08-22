@@ -16,6 +16,7 @@ type Service struct {
 	URL       string     `json:"url"`
 	Type      string     `json:"type"`
 	Status    string     `json:"status"`
+	Error     string     `json:"error,omitempty"`
 	Request   *Request   `json:"request,omitempty"`
 	BasicAuth *BasicAuth `json:"basic_auth,omitempty"`
 }
