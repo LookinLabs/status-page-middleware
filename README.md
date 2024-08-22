@@ -17,8 +17,11 @@ The unique functionality of this status page is that it can be used for any appl
 - Add embed support for the status page template
 - Add more advanced health checks
     - Health checks with Authentication
-    - Health checks with Custom Headers
-    - Health checks via API Request against the endpoints
+        - Basic Auth [x]
+        - Bearer Token [ ]
+        - Custom Header [ ]
+    - Health checks with Custom Headers [x]
+    - Health checks via API Request against the endpoints [x]
 - Add support for more protocols
     - HTTPS
     - FTP
@@ -26,10 +29,12 @@ The unique functionality of this status page is that it can be used for any appl
     - WebSocket
 - ChatOps - Send notifications when a service goes down or recovers
 - Make more comprehensive UI for the status page
+    - Add incident management support
+    - Add metrics and monitoring support
 
 ## Quick Start
 
-**1. Configure your endpoints in `config.json` file**
+**1. Configure your endpoints in `config/endpoints.json` file**
 
 ```json
 [
@@ -51,59 +56,53 @@ The unique functionality of this status page is that it can be used for any appl
 ]
 ```
 
-**2. Configure your environment variables (optional)**
-
-By default STATUS_PAGE_CONFIG_PATH, STATUS_PAGE_TEMPLATE_PATH, and STATUS_PAGE_PATH are set to the following values:
-
-```bash
-STATUS_PAGE_CONFIG_PATH="config/endpoints.json"
-STATUS_PAGE_TEMPLATE_PATH="view/html/status.html"
-STATUS_PAGE_PATH="/status"
-```
-
-**3. Get the module**
+**2. Get the module**
 
 ```bash
 go get -u github.com/lookinlabs/status-page-middleware
 ```
 
-**4. Use the middleware**
+**3. Use the middleware**
 
 ```go
 package main
 
 import (
-    "github.com/gin-gonic/gin"
-	"github.com/lookinlabs/status-page-middleware/pkg/config"
+	"github.com/gin-gonic/gin"
 	"github.com/lookinlabs/status-page-middleware/pkg/endpoints"
+	"github.com/lookinlabs/status-page-middleware/pkg/logger"
 )
 
 func main() {
 	router := gin.Default()
 
-	router.GET("/ping", controller.Ping)
-	config, err := config.LoadStatusPage()
-	if err != nil {
-		return nil, fmt.Errorf("failed to load status page environment variables: %v", err)
-	}
+	endpoints.StatusPageMiddleware(router)
 
-	router.LoadHTMLGlob(config.StatusPageTemplatePath)
-	router.Use(endpoints.StatusPage(config))
-	router.Run(":8080")
+	if err := router.Run(":8080"); err != nil {
+		log.Fatalf("Failed to run server: %v", err)
+	}
 }
+
 ```
 
-**5. Write the status page**
-
-Write the status page via HTML template that you've specified in `STATUS_PAGE_TEMPLATE_PATH` environment variable.
-
-By default you can use the [Production Ready HTML Template](view/html/status.html) for your status page.
-
-**6. Run your application**
+**4. Run your application**
 
 ```bash
 make run
 ```
+
+## Advanced
+
+### Customizable Frontend
+
+Status Page Middleware has default frontend written using HTML Template. You can customize the frontend by changing the HTML template file. Additionally you can copy the [Production Ready HTML Template](view/html/status.html) and edit according to your needs.
+
+### Optional Environment Variables
+
+Status Page Middleware can handle the following environment variables:
+- `STATUS_PAGE_CONFIG_PATH` - Path to the JSON configuration file containing the endpoints to monitor. Default value is `config/endpoints.json`.
+- `STATUS_PAGE_TEMPLATE_PATH` - Path to the HTML template file for the status page. Default value is `view/html/status.html`.
+- `STATUS_PAGE_PATH` - URL Path to the status page. Default value is `/status`, which means that the status page will be available at `http://localhost:8080/status`.
 
 ## Contributing
 
