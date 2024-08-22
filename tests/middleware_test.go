@@ -20,14 +20,12 @@ func TestStatusPageMiddleware(testCase *testing.T) {
 	router := gin.Default()
 
 	cfg := &config.Environments{
-		StatusPageConfigPath: "../pkg/config/endpoints.json",
+		StatusPageConfigPath:   "../pkg/config/endpoints.json",
+		StatusPageTemplatePath: "../view/html/status.html",
 	}
 
-	// Load HTML templates
-	router.LoadHTMLGlob("../view/html/status.html")
-
 	// Use middleware
-	router.Use(endpoints.StatusPage(cfg))
+	endpoints.StatusPageMiddleware(router)
 
 	// Define a test endpoint
 	router.GET("/ping", controller.Ping)

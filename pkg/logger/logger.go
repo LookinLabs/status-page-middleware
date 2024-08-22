@@ -44,7 +44,14 @@ func init() {
 		panic(err)
 	}
 	log = rawLogger.Sugar()
-	defer rawLogger.Sync()
+	defer func() {
+		if err := rawLogger.Sync(); err != nil {
+			panic(err)
+		}
+	}()
+	if err != nil {
+		panic(err)
+	}
 }
 
 // getLogger returns the global sugared logger instance

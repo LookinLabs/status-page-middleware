@@ -20,4 +20,4 @@ gosec:
 tests:
 	go test -v ./tests/...
 
-validate: linter gosec
+validate: linter gosec tests

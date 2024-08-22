@@ -51,7 +51,9 @@ The unique functionality of this status page is that it can be used for any appl
 ]
 ```
 
-**2. Configure your environment variables**
+**2. Configure your environment variables (optional)**
+
+By default STATUS_PAGE_CONFIG_PATH, STATUS_PAGE_TEMPLATE_PATH, and STATUS_PAGE_PATH are set to the following values:
 
 ```bash
 STATUS_PAGE_CONFIG_PATH="config/endpoints.json"
