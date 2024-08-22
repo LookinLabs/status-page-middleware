@@ -36,6 +36,8 @@ The unique functionality of this status page is that it can be used for any appl
 
 **1. Configure your endpoints in `config/endpoints.json` file**
 
+You can get the examples from [Endpoints Config JSON File](./pkg/config/endpoints.json)
+
 ```json
 [
     {

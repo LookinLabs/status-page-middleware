@@ -1,6 +1,6 @@
 [
     {
-        "name": "Api v2 Ping Check",
+        "name": "Api v2 Ping Check with Request Body",
         "url": "http://localhost:8080/v2/ping",
         "type": "http",
         "request": {
@@ -21,7 +21,7 @@
         "type": "http"
     },
     {
-        "name": "Api v3 Ping Check",
+        "name": "Api v3 Ping Check With headers and Basic Auth",
         "url": "http://localhost:8080/v3/ping",
         "type": "http",
         "request": {
