@@ -49,9 +49,6 @@ func init() {
 			panic(err)
 		}
 	}()
-	if err != nil {
-		panic(err)
-	}
 }
 
 // getLogger returns the global sugared logger instance
