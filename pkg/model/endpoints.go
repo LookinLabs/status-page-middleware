@@ -1,9 +1,9 @@
 package model
 
 type Request struct {
-	Method  string            `json:"method"`
-	Headers map[string]string `json:"headers"`
-	Body    map[string]string `json:"body"`
+	Method  string                 `json:"method"`
+	Headers map[string]string      `json:"headers"`
+	Body    map[string]interface{} `json:"body"`
 }
 
 type Service struct {
