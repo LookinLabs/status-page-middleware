@@ -45,7 +45,7 @@ func init() {
 	}
 	log = rawLogger.Sugar()
 	defer func() {
-		if err := rawLogger.Sync(); err != nil {
+		if err := rawLogger.Sync(); err != nil && err.Error() != "sync /dev/stdout: inappropriate ioctl for device" {
 			panic(err)
 		}
 	}()
