@@ -22,12 +22,12 @@ func StatusPageMiddleware(router *gin.Engine) {
 	// Check if custom template path is provided
 	if _, err := os.Stat(env.StatusPageTemplatePath); os.IsNotExist(err) {
 		// Use embedded template if custom template is not provided
-		tmpl := template.Must(template.ParseFS(view.StatusPageHTML, "html/status.html"))
-		router.SetHTMLTemplate(tmpl)
+		tmpl, err := template.ParseFS(view.StatusPageHTML, "html/status.html")
 		if err != nil {
 			logger.Fatalf("StatusMiddleware: Failed to parse embedded HTML template: %v", err)
 			return
 		}
+		router.SetHTMLTemplate(tmpl)
 	} else {
 		// Use custom template if provided
 		router.LoadHTMLGlob(env.StatusPageTemplatePath)
