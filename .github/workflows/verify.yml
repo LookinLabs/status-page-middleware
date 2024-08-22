@@ -41,7 +41,7 @@ jobs:
             skip-pkg-cache: true
 
     verify_backend_functionality:
-      name: Verify Backend Code Quality
+      name: Verify Backend Code Functionality
       runs-on: ubuntu-latest
       steps:
         - uses: actions/checkout@v4
