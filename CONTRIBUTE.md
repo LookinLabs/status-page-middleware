@@ -7,6 +7,14 @@
 5. Create a pull request.
 6. Add appropriate labels to the pull request.
 
+**Note** Copy main.go.bkup to main.go if you want to test the middleware
+
+# Updating the version
+
+1. Update the dependencies in go.mod file
+2. Create the tag with the version number
+3. Push the tag to the repository
+
 # Golang - Practices and Coding Conventions
 
 ## Introduction

@@ -1,6 +1,7 @@
 package checks
 
 import (
+	"bytes"
 	"log"
 	"net"
 	"net/http"
@@ -8,15 +9,31 @@ import (
 	"time"
 )
 
-func HTTP(urlString string) string {
+func HTTP(urlString, method string, headers map[string]string, requestBody string) string {
 	parsedURL, err := url.ParseRequestURI(urlString)
 	if err != nil {
 		log.Printf("Invalid URL: %v", err)
 		return "down"
 	}
 
-	resp, err := http.Get(parsedURL.String())
-	if err != nil || resp.StatusCode != http.StatusOK {
+	client := &http.Client{}
+	req, err := http.NewRequest(method, parsedURL.String(), bytes.NewBuffer([]byte(requestBody)))
+	if err != nil {
+		log.Printf("Error creating request: %v", err)
+		return "down"
+	}
+
+	for key, value := range headers {
+		req.Header.Set(key, value)
+	}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Printf("Error performing request: %v", err)
+		return "down"
+	}
+	if resp.StatusCode != http.StatusOK {
+		log.Printf("Unexpected status code: %d", resp.StatusCode)
 		return "down"
 	}
 	defer func() {
@@ -31,11 +48,13 @@ func HTTP(urlString string) string {
 func DNS(rawURL string) string {
 	parsedURL, err := url.Parse(rawURL)
 	if err != nil {
+		log.Printf("Invalid URL: %v", err)
 		return "down"
 	}
 	host := parsedURL.Hostname()
 	_, err = net.LookupHost(host)
 	if err != nil {
+		log.Printf("DNS lookup failed for host: %v", err)
 		return "down"
 	}
 
@@ -45,6 +64,7 @@ func DNS(rawURL string) string {
 func TCP(rawURL string) string {
 	parsedURL, err := url.Parse(rawURL)
 	if err != nil {
+		log.Printf("Invalid URL: %v", err)
 		return "down"
 	}
 
@@ -57,6 +77,7 @@ func TCP(rawURL string) string {
 	address := net.JoinHostPort(host, port)
 	conn, err := net.DialTimeout("tcp", address, 5*time.Second)
 	if err != nil {
+		log.Printf("TCP connection failed: %v", err)
 		return "down"
 	}
 
