@@ -19,7 +19,12 @@ func TestChecks(testCase *testing.T) {
 	}
 
 	runTest("HTTP Check", func(httpCase *testing.T) {
-		status := checks.HTTP("http://localhost:8080/ping")
+		method := "POST"
+		headers := map[string]string{
+			"Content-Type": "application/json",
+		}
+		body := `{"key": "value"}`
+		status := checks.HTTP("http://localhost:8080/ping", method, headers, body)
 		if status != "up" && status != "down" {
 			httpCase.Errorf("Expected status to be 'up' or 'down', got %s", status)
 		}

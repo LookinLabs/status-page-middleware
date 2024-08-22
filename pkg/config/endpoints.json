@@ -1,6 +1,22 @@
 [
     {
-        "name": "Api HTTP Check",
+        "name": "Api v2 Ping Check",
+        "url": "http://localhost:8080/v2/ping",
+        "type": "http",
+        "request": {
+            "method": "POST",
+            "headers": {
+                "Message": "ping",
+                "PingPong": "pong",
+                "Content-Type": "application/json"
+            },
+            "body": {
+                "message": "ping"
+            }
+        }
+    },
+    {
+        "name": "Api v1 Ping Check",
         "url": "http://localhost:8080/ping",
         "type": "http"
     },

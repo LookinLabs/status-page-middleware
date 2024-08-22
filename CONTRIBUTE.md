@@ -7,6 +7,8 @@
 5. Create a pull request.
 6. Add appropriate labels to the pull request.
 
+**Note** Copy main.go.bkup to main.go if you want to test the middleware
+
 # Golang - Practices and Coding Conventions
 
 ## Introduction

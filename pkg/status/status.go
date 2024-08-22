@@ -1,6 +1,7 @@
 package status
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -14,14 +15,28 @@ func Services(cfg *config.Environments, ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Error loading config",
 		})
-
 		return
 	}
 
 	for i := range services {
 		switch services[i].Type {
 		case "http":
-			services[i].Status = checks.HTTP(services[i].URL)
+			method := "GET"
+			headers := map[string]string{}
+			body := ""
+
+			if services[i].Request != nil {
+				method = services[i].Request.Method
+				headers = services[i].Request.Headers
+				bodyBytes, err := json.Marshal(services[i].Request.Body)
+				if err != nil {
+					services[i].Status = "error"
+					continue
+				}
+				body = string(bodyBytes)
+			}
+
+			services[i].Status = checks.HTTP(services[i].URL, method, headers, body)
 		case "dns":
 			services[i].Status = checks.DNS(services[i].URL)
 		case "tcp":
