@@ -15,9 +15,9 @@ import (
 
 func TestStatusPageMiddleware(testCase *testing.T) {
 	// Set environment variables for the test
-	os.Setenv("STATUS_PAGE_CONFIG_PATH", "../pkg/config/endpoints.json")
-	os.Setenv("STATUS_PAGE_TEMPLATE_PATH", "../view/html/status.html")
-	os.Setenv("STATUS_PAGE_PATH", "/status")
+	testCase.Setenv("STATUS_PAGE_CONFIG_PATH", "../pkg/config/endpoints.json")
+	testCase.Setenv("STATUS_PAGE_TEMPLATE_PATH", "../view/html/status.html")
+	testCase.Setenv("STATUS_PAGE_PATH", "/status")
 
 	// Set Gin to Test Mode
 	gin.SetMode(gin.TestMode)
