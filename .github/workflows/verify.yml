@@ -3,16 +3,19 @@ run-name: Verify code changes
 on:
   pull_request:
     types:
-        - opened
-        - synchronize
-        - edited
-        - closed
+      - opened
+      - synchronize
+      - edited
+      - closed
+  push:
+    tags:
+      - 'v[0-9].[0-9].[0-9][0-9]'
 
 env:
   GOPROXY: https://proxy.golang.org
 
 permissions:
-    contents: read
+    contents: write
     packages: read
     statuses: write
     pull-requests: write
@@ -40,3 +43,20 @@ jobs:
 
         - name: Verify functionality
           run: go test -v ./tests/...
+
+    publish_release:
+      # if: github.repository == 'LookinLabs/status-page-middleware'  
+      runs-on: ubuntu-latest
+      steps:
+        - name: Set version env
+          run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      
+        - uses: release-drafter/release-drafter@v6
+          with:
+            disable-autolabeler: true
+            name: ${{ env.RELEASE_VERSION }}
+            tag: ${{ env.RELEASE_VERSION }}
+            version: ${{ env.RELEASE_VERSION }}
+            publish: true
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
