@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/lookinlabs/status-page-middleware/pkg/checks"
+	"github.com/lookinlabs/status-page-middleware/pkg/model"
 )
 
 func TestChecks(testCase *testing.T) {
@@ -24,7 +25,11 @@ func TestChecks(testCase *testing.T) {
 			"Content-Type": "application/json",
 		}
 		body := `{"key": "value"}`
-		status := checks.HTTP("http://localhost:8080/ping", method, headers, body)
+		basicAuth := &model.BasicAuth{
+			Username: "your_username",
+			Password: "your_password",
+		}
+		status := checks.HTTP("http://localhost:8080/ping", method, headers, body, basicAuth)
 		if status != "up" && status != "down" {
 			httpCase.Errorf("Expected status to be 'up' or 'down', got %s", status)
 		}

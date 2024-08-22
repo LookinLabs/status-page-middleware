@@ -37,3 +37,6 @@ jobs:
             args: --concurrency=16 --timeout=5m --out-format=github-actions --issues-exit-code=1
             skip-cache: false
             skip-pkg-cache: true
+
+        - name: Verify functionality
+          run: go test -v ./tests/...

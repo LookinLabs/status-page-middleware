@@ -2,14 +2,17 @@ package checks
 
 import (
 	"bytes"
+	"encoding/base64"
 	"log"
 	"net"
 	"net/http"
 	"net/url"
 	"time"
+
+	"github.com/lookinlabs/status-page-middleware/pkg/model"
 )
 
-func HTTP(urlString, method string, headers map[string]string, requestBody string) string {
+func HTTP(urlString, method string, headers map[string]string, requestBody string, basicAuth *model.BasicAuth) string {
 	parsedURL, err := url.ParseRequestURI(urlString)
 	if err != nil {
 		log.Printf("Invalid URL: %v", err)
@@ -25,6 +28,13 @@ func HTTP(urlString, method string, headers map[string]string, requestBody strin
 
 	for key, value := range headers {
 		req.Header.Set(key, value)
+	}
+
+	// Set basic authentication if provided
+	if basicAuth != nil {
+		auth := basicAuth.Username + ":" + basicAuth.Password
+		encodedAuth := base64.StdEncoding.EncodeToString([]byte(auth))
+		req.Header.Set("Authorization", "Basic "+encodedAuth)
 	}
 
 	resp, err := client.Do(req)

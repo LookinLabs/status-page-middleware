@@ -17,4 +17,7 @@ linter:
 gosec:
 	@gosec -quiet ./...
 
+tests:
+	go test -v ./tests/...
+
 validate: linter gosec

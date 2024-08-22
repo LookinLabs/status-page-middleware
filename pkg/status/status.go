@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/lookinlabs/status-page-middleware/pkg/checks"
 	"github.com/lookinlabs/status-page-middleware/pkg/config"
+	"github.com/lookinlabs/status-page-middleware/pkg/model"
 )
 
 func Services(cfg *config.Environments, ctx *gin.Context) {
@@ -24,6 +25,7 @@ func Services(cfg *config.Environments, ctx *gin.Context) {
 			method := "GET"
 			headers := map[string]string{}
 			body := ""
+			var basicAuth *model.BasicAuth
 
 			if services[i].Request != nil {
 				method = services[i].Request.Method
@@ -36,7 +38,11 @@ func Services(cfg *config.Environments, ctx *gin.Context) {
 				body = string(bodyBytes)
 			}
 
-			services[i].Status = checks.HTTP(services[i].URL, method, headers, body)
+			if services[i].BasicAuth != nil {
+				basicAuth = services[i].BasicAuth
+			}
+
+			services[i].Status = checks.HTTP(services[i].URL, method, headers, body, basicAuth)
 		case "dns":
 			services[i].Status = checks.DNS(services[i].URL)
 		case "tcp":
