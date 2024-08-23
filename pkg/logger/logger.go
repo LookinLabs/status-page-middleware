@@ -70,6 +70,6 @@ func Errorf(template string, args ...interface{}) {
 }
 
 func Fatalf(template string, args ...interface{}) {
-	getLogger().Errorf(template, args...)
+	getLogger().Fatalf(template, args...)
 	os.Exit(1)
 }
