@@ -12,17 +12,7 @@ import (
 	"github.com/lookinlabs/status-page-middleware/pkg/model"
 )
 
-func Services(cfg *config.Environments, ctx *gin.Context) {
-	services, err := config.LoadEndpoints(cfg.StatusPageConfigPath)
-	if err != nil {
-		logger.Errorf("StatusMiddleware: Error loading config: %v", err)
-		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Error loading config",
-		})
-
-		return
-	}
-
+func Services(cfg *config.Environments, services []model.Service, ctx *gin.Context) {
 	var wg sync.WaitGroup
 	for each := range services {
 		wg.Add(1)
