@@ -16,11 +16,11 @@ func main() {
 	router.POST("/v2/ping", controller.PingV2)
 	router.POST("/v3/ping", controller.PingV3)
 
-	controller, err := endpoints.NewStatusPageController("path/to/config")
+	handler, err := endpoints.NewStatusPageController("path/to/config")
 	if err != nil {
 		log.Fatalf("Failed to initialize StatusPageController: %v", err)
 	}
-	controller.StatusPageMiddleware(router)
+	handler.StatusPageMiddleware(router)
 
 	if err := router.Run(":8080"); err != nil {
 		logger.Fatalf("StatusMiddleware: Failed to run server: %v", err)
