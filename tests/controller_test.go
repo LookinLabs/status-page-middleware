@@ -47,8 +47,14 @@ func TestControllers(testCase *testing.T) {
 		cfg := &config.Environments{
 			StatusPageConfigPath: "../pkg/config/endpoints.json",
 		}
+
+		services, err := config.LoadEndpoints(cfg.StatusPageConfigPath)
+		if err != nil {
+			testServices.Fatalf("Failed to load endpoints: %v", err)
+		}
+
 		router.GET("/status", func(ctx *gin.Context) {
-			status.Services(cfg, ctx)
+			status.Services(cfg, services, ctx)
 		})
 
 		response := httptest.NewRecorder()

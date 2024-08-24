@@ -78,7 +78,11 @@ import (
 func main() {
 	router := gin.Default()
 
-	endpoints.StatusPageMiddleware(router)
+	handler, err := endpoints.NewStatusPageController("path/to/config")
+	if err != nil {
+		log.Fatalf("Failed to initialize StatusPageController: %v", err)
+	}
+	handler.StatusPageMiddleware(router)
 
 	if err := router.Run(":8080"); err != nil {
 		log.Fatalf("Failed to run server: %v", err)

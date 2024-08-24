@@ -31,8 +31,14 @@ func TestStatusPageMiddleware(testCase *testing.T) {
 		StatusPagePath:         os.Getenv("STATUS_PAGE_PATH"),
 	}
 
+	// Initialize StatusPageController
+	handler, err := endpoints.NewStatusPageController(cfg.StatusPageConfigPath)
+	if err != nil {
+		testCase.Fatalf("Failed to initialize StatusPageHandler: %v", err)
+	}
+
 	// Use middleware
-	endpoints.StatusPageMiddleware(router)
+	handler.StatusPageMiddleware(router)
 
 	// Define a test endpoint
 	router.GET("/ping", controller.Ping)
