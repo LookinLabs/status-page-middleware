@@ -32,13 +32,17 @@ func init() {
 	}
 
 	// Get log level from environment variable
+	logPath := getLogPathFromEnv()
 	logLevel := getLogLevelFromEnv()
 
 	config := zap.Config{
-		Encoding:         "json",
-		EncoderConfig:    encoderConfig,
-		Level:            zap.NewAtomicLevelAt(logLevel),
-		OutputPaths:      []string{"stdout"},
+		Encoding:      "json",
+		EncoderConfig: encoderConfig,
+		Level:         zap.NewAtomicLevelAt(logLevel),
+		OutputPaths: []string{
+			logPath,
+			"stdout",
+		},
 		ErrorOutputPaths: []string{"stderr"},
 	}
 
@@ -47,6 +51,15 @@ func init() {
 		panic(err)
 	}
 	log = rawLogger.Sugar()
+}
+
+func getLogPathFromEnv() string {
+	logPath := os.Getenv("LOG_PATH")
+	if logPath == "" {
+		return "/var/log/logs.log"
+	}
+
+	return logPath
 }
 
 // getLogLevelFromEnv reads the log level from the environment variable LOG_LEVEL
