@@ -31,10 +31,13 @@ func init() {
 		EncodeCaller:   zapcore.ShortCallerEncoder,
 	}
 
+	// Get log level from environment variable
+	logLevel := getLogLevelFromEnv()
+
 	config := zap.Config{
 		Encoding:         "json",
 		EncoderConfig:    encoderConfig,
-		Level:            zap.NewAtomicLevelAt(zap.InfoLevel),
+		Level:            zap.NewAtomicLevelAt(logLevel),
 		OutputPaths:      []string{"stdout"},
 		ErrorOutputPaths: []string{"stderr"},
 	}
@@ -44,6 +47,29 @@ func init() {
 		panic(err)
 	}
 	log = rawLogger.Sugar()
+}
+
+// getLogLevelFromEnv reads the log level from the environment variable LOG_LEVEL
+func getLogLevelFromEnv() zapcore.Level {
+	level := os.Getenv("LOG_LEVEL")
+	switch level {
+	case "debug":
+		return zap.DebugLevel
+	case "info":
+		return zap.InfoLevel
+	case "warn":
+		return zap.WarnLevel
+	case "error":
+		return zap.ErrorLevel
+	case "dpanic":
+		return zap.DPanicLevel
+	case "panic":
+		return zap.PanicLevel
+	case "fatal":
+		return zap.FatalLevel
+	default:
+		return zap.InfoLevel
+	}
 }
 
 // getLogger returns the global sugared logger instance
