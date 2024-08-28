@@ -32,9 +32,11 @@ func init() {
 	}
 
 	config := zap.Config{
-		Encoding:      "json",
-		EncoderConfig: encoderConfig,
-		Level:         zap.NewAtomicLevelAt(zap.InfoLevel),
+		Encoding:         "json",
+		EncoderConfig:    encoderConfig,
+		Level:            zap.NewAtomicLevelAt(zap.InfoLevel),
+		OutputPaths:      []string{"stdout"},
+		ErrorOutputPaths: []string{"stderr"},
 	}
 
 	rawLogger, err := config.Build()
@@ -42,11 +44,6 @@ func init() {
 		panic(err)
 	}
 	log = rawLogger.Sugar()
-	defer func() {
-		if err := rawLogger.Sync(); err != nil {
-			panic(err)
-		}
-	}()
 }
 
 // getLogger returns the global sugared logger instance

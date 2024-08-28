@@ -21,6 +21,16 @@
         "type": "http"
     },
     {
+        "name": "Api v1 Ping Check Fail",
+        "url": "http://localhost:8080/v1/v2/ping",
+        "type": "http"
+    },
+    {
+        "name": "Api v1 Ping Check Fail",
+        "url": "http://localhost:8080/v2/v1/ping",
+        "type": "http"
+    },
+    {
         "name": "Api v3 Ping Check With headers and Basic Auth",
         "url": "http://localhost:8080/v3/ping",
         "type": "http",
