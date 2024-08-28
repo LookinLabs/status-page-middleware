@@ -2,6 +2,7 @@ package logger
 
 import (
 	"os"
+	"path/filepath"
 	"time"
 
 	"go.uber.org/zap"
@@ -56,7 +57,16 @@ func init() {
 func getLogPathFromEnv() string {
 	logPath := os.Getenv("LOG_PATH")
 	if logPath == "" {
-		return "/var/log/logs.log"
+		logPath = "./logs/travelis.log"
+	}
+
+	// Sanitize the log path
+	logPath = filepath.Clean(logPath)
+
+	// Ensure the directory exists
+	dir := filepath.Dir(logPath)
+	if err := os.MkdirAll(dir, 0o750); err != nil {
+		panic("Failed to create log directory")
 	}
 
 	return logPath
