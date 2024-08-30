@@ -32,7 +32,7 @@ func TestLoadEndpoints(test *testing.T) {
         {"name": "service1", "url": "http://service1.com"},
         {"name": "service2", "url": "http://service2.com"}
     ]`
-	err := os.WriteFile(testFilePath, []byte(testData), 0644)
+	err := os.WriteFile(testFilePath, []byte(testData), 0o644)
 	assert.NoError(test, err)
 	defer os.Remove(testFilePath)
 

@@ -1,7 +1,9 @@
 package logger
 
 import (
+	"bytes"
 	"os"
+	"sync"
 	"testing"
 	"time"
 
@@ -9,9 +11,24 @@ import (
 )
 
 func TestLogger(test *testing.T) {
-	testLogLevel(test)
+	var wg sync.WaitGroup
+
+	wg.Add(2)
+
+	go func() {
+		defer wg.Done()
+		testLogLevel(test)
+	}()
+
+	go func() {
+		defer wg.Done()
+		testLogFileCreationAndContent(test)
+	}()
+
+	time.Sleep(100 * time.Millisecond)
+
 	testLoggingMessages(test)
-	testLogFileCreationAndContent(test)
+	wg.Wait()
 }
 
 func testLogLevel(test *testing.T) {
@@ -20,10 +37,10 @@ func testLogLevel(test *testing.T) {
 	for _, level := range logLevels {
 		test.Run("LogLevel_"+level, func(test *testing.T) {
 			logPath := "./test_logs/test_log_level_" + level + ".log"
-			os.Setenv("LOG_LEVEL", level)
+			test.Setenv("LOG_LEVEL", level)
 			defer os.Unsetenv("LOG_LEVEL")
 
-			os.Setenv("LOG_PATH", logPath)
+			test.Setenv("LOG_PATH", logPath)
 			defer os.Unsetenv("LOG_PATH")
 
 			initializeLogger() // Initialize the logger with the new log level
@@ -39,50 +56,49 @@ func testLogLevel(test *testing.T) {
 
 func testLoggingMessages(test *testing.T) {
 	test.Run("LoggingMessages", func(test *testing.T) {
-		logPath := "./test_logs/test_logging_messages.log"
-		os.Setenv("LOG_PATH", logPath)
-		defer os.Unsetenv("LOG_PATH")
+		// Create a buffer to capture the logs
+		var buffer bytes.Buffer
 
-		initializeLogger() // Initialize the logger
+		// Redirect stdout to the buffer
+		oldStdout := os.Stdout
+		readPipe, writePipe, _ := os.Pipe()
+		os.Stdout = writePipe
 
+		// Initialize the logger to write to stdout
+		initializeLogger()
+
+		// Log messages
 		Infof("This is an info message")
 		Warnf("This is a warning message")
 		Errorf("This is an error message")
 
-		// Ensure the logger is flushed
-		log.Sync()
+		// Close the writer and restore stdout
+		writePipe.Close()
+		os.Stdout = oldStdout
 
-		// Add a small delay to ensure log messages are written to the file
-		time.Sleep(100 * time.Millisecond)
+		// Read the captured logs
+		_, err := buffer.ReadFrom(readPipe)
+		if err != nil {
+			test.Errorf("Failed to read from pipe: %v", err)
+		}
 
-		// Check if the log file contains the messages
-		content, err := os.ReadFile(logPath)
-		assert.NoError(test, err)
-
-		assert.Contains(test, string(content), "This is an info message")
-		assert.Contains(test, string(content), "This is a warning message")
-		assert.Contains(test, string(content), "This is an error message")
-
-		// Cleanup log file
-		defer os.Remove(logPath)
+		// Check if the buffer contains the log messages
+		logOutput := buffer.String()
+		assert.Contains(test, logOutput, "This is an info message")
+		assert.Contains(test, logOutput, "This is a warning message")
+		assert.Contains(test, logOutput, "This is an error message")
 	})
 }
 
 func testLogFileCreationAndContent(test *testing.T) {
 	test.Run("LogFileCreationAndContent", func(test *testing.T) {
 		logPath := "./test_logs/test_log_file_creation.log"
-		os.Setenv("LOG_PATH", logPath)
+		test.Setenv("LOG_PATH", logPath)
 		defer os.Unsetenv("LOG_PATH")
 
 		initializeLogger() // Initialize the logger
 
 		Infof("Testing log file creation")
-
-		// Ensure the logger is flushed
-		log.Sync()
-
-		// Add a small delay to ensure log messages are written to the file
-		time.Sleep(100 * time.Millisecond)
 
 		// Check if the log file is created
 		_, err := os.Stat(logPath)

@@ -24,14 +24,14 @@ func TestEndpoints(test *testing.T) {
 	defer helpers.SetEnv(envVars)()
 
 	// Create a temporary JSON file for testing
-	FilePath := filepath.Join(os.TempDir(), "test_endpoints.json")
+	filePath := filepath.Join(os.TempDir(), "test_endpoints.json")
 	Data := `[
         {"name": "service1", "url": "http://service1.com"},
         {"name": "service2", "url": "http://service2.com"}
     ]`
-	err := os.WriteFile(FilePath, []byte(Data), 0644)
+	err := os.WriteFile(filePath, []byte(Data), 0o644)
 	assert.NoError(test, err)
-	defer os.Remove(FilePath)
+	defer os.Remove(filePath)
 
 	// WaitGroup to synchronize goroutines
 	var wg sync.WaitGroup
@@ -40,22 +40,22 @@ func TestEndpoints(test *testing.T) {
 	// Run testNewStatusPageController in a goroutine
 	go func() {
 		defer wg.Done()
-		testNewStatusPageController(test, FilePath)
+		testNewStatusPageController(test, filePath)
 	}()
 
 	// Run testStatusPageMiddleware in a goroutine
 	go func() {
 		defer wg.Done()
-		testStatusPageMiddleware(test, FilePath)
+		testStatusPageMiddleware(test, filePath)
 	}()
 
 	// Wait for both goroutines to finish
 	wg.Wait()
 }
 
-func testNewStatusPageController(test *testing.T, FilePath string) {
+func testNewStatusPageController(test *testing.T, filePath string) {
 	// Initialize the StatusPageController
-	handler, err := NewStatusPageController(FilePath)
+	handler, err := NewStatusPageController(filePath)
 	if err != nil {
 		log.Fatalf("Failed to initialize StatusPageController: %v", err)
 	}
@@ -84,7 +84,7 @@ func testStatusPageMiddleware(test *testing.T, testFilePath string) {
 
 	// Create a test HTTP server
 	response := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/teststatus", nil)
+	req, _ := http.NewRequest(http.MethodGet, "/teststatus", nil)
 	router.ServeHTTP(response, req)
 
 	assert.Equal(test, http.StatusOK, response.Code)
