@@ -29,7 +29,9 @@ func TestModelMarshalling(test *testing.T) {
 			assert.NoError(requestCase, err)
 
 			var unmarshalledRequest Request
-			err = json.Decode(data, &unmarshalledRequest)
+			if err = json.Decode(data, &unmarshalledRequest); err != nil {
+				requestCase.Errorf("Expected no error, got %v", err)
+			}
 			assert.NoError(requestCase, err)
 			assert.Equal(requestCase, request, &unmarshalledRequest)
 		})
@@ -47,7 +49,9 @@ func TestModelMarshalling(test *testing.T) {
 			assert.NoError(authCase, err)
 
 			var unmarshalledBasicAuth BasicAuth
-			err = json.Decode(data, &unmarshalledBasicAuth)
+			if err = json.Decode(data, &unmarshalledBasicAuth); err != nil {
+				authCase.Errorf("Expected no error, got %v", err)
+			}
 			assert.NoError(authCase, err)
 			assert.Equal(authCase, basicAuth, &unmarshalledBasicAuth)
 		})
@@ -80,7 +84,9 @@ func TestModelMarshalling(test *testing.T) {
 			assert.NoError(serviceCase, err)
 
 			var unmarshalledService Service
-			err = json.Decode(data, &unmarshalledService)
+			if err = json.Decode(data, &unmarshalledService); err != nil {
+				serviceCase.Errorf("Expected no error, got %v", err)
+			}
 			assert.NoError(serviceCase, err)
 			assert.Equal(serviceCase, service, &unmarshalledService)
 		})

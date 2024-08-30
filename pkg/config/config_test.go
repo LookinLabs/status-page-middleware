@@ -45,16 +45,16 @@ func testLoadStatusPage(test *testing.T) {
 
 func testLoadEndpoints(test *testing.T) {
 	// Create a temporary JSON file for testing
-	testFilePath := filepath.Join(os.TempDir(), "test_endpoints.json")
-	testData := `[
+	filePath := filepath.Join(os.TempDir(), "test_endpoints.json")
+	data := `[
         {"name": "service1", "url": "http://service1.com"},
         {"name": "service2", "url": "http://service2.com"}
     ]`
-	err := os.WriteFile(testFilePath, []byte(testData), 0o644)
+	err := os.WriteFile(filePath, []byte(data), 0o644)
 	assert.NoError(test, err)
-	defer os.Remove(testFilePath)
+	defer os.Remove(filePath)
 
-	services, err := LoadEndpoints(testFilePath)
+	services, err := LoadEndpoints(filePath)
 	assert.NoError(test, err)
 	assert.Len(test, services, 2)
 	assert.Equal(test, "service1", services[0].Name)

@@ -25,11 +25,11 @@ func TestEndpoints(test *testing.T) {
 
 	// Create a temporary JSON file for testing
 	filePath := filepath.Join(os.TempDir(), "test_endpoints.json")
-	Data := `[
+	data := `[
         {"name": "service1", "url": "http://service1.com"},
         {"name": "service2", "url": "http://service2.com"}
     ]`
-	err := os.WriteFile(filePath, []byte(Data), 0o644)
+	err := os.WriteFile(filePath, []byte(data), 0o644)
 	assert.NoError(test, err)
 	defer os.Remove(filePath)
 

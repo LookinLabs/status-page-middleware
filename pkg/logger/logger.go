@@ -61,7 +61,7 @@ func initializeLogger() {
 func getLogPathFromEnv() string {
 	logPath := os.Getenv("LOG_PATH")
 	if logPath == "" {
-		logPath = "./logs/statuspage.log"
+		logPath = "./logs/app.log"
 	}
 
 	// Sanitize the log path
