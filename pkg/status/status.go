@@ -13,16 +13,9 @@ import (
 )
 
 func Services(_ *config.Environments, services []model.Service, ctx *gin.Context) {
-	var wg sync.WaitGroup
 	for each := range services {
-		wg.Add(1)
-		go func(service *model.Service) {
-			defer wg.Done()
-			checkService(service)
-		}(&services[each])
+		checkService(&services[each])
 	}
-
-	wg.Wait()
 
 	ctx.HTML(http.StatusOK, "status.html", gin.H{
 		"services": services,
@@ -30,33 +23,25 @@ func Services(_ *config.Environments, services []model.Service, ctx *gin.Context
 }
 
 func checkService(service *model.Service) {
-	var wg sync.WaitGroup
+	var waitGroup sync.WaitGroup
+	waitGroup.Add(1)
 
-	switch service.Type {
-	case "http":
-		wg.Add(1)
-		go func() {
+	go func() {
+		defer waitGroup.Done()
+		switch service.Type {
+		case "http":
 			checkHTTPService(service)
-			defer wg.Done()
-		}()
-	case "dns":
-		wg.Add(1)
-		go func() {
+		case "dns":
 			checkDNSService(service)
-			defer wg.Done()
-		}()
-	case "tcp":
-		wg.Add(1)
-		go func() {
+		case "tcp":
 			checkTCPService(service)
-			defer wg.Done()
-		}()
-	default:
-		service.Status = "unknown"
-		service.Error = "unknown service type"
-	}
+		default:
+			service.Status = "unknown"
+			service.Error = "unknown service type"
+		}
+	}()
 
-	wg.Wait()
+	waitGroup.Wait()
 }
 
 func checkHTTPService(service *model.Service) {
