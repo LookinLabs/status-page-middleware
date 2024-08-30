@@ -2,7 +2,6 @@ package endpoints
 
 import (
 	"html/template"
-	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -60,7 +59,6 @@ func (controller *StatusPage) getStatusPage() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		if ctx.Request.URL.Path == controller.env.StatusPagePath {
 			status.Services(controller.env, controller.services, ctx)
-			ctx.HTML(http.StatusOK, "status.html", gin.H{})
 			ctx.Abort()
 		} else {
 			ctx.Next()

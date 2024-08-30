@@ -12,6 +12,10 @@ import (
 var log *zap.SugaredLogger
 
 func init() {
+	initializeLogger()
+}
+
+func initializeLogger() {
 	// Custom time encoder to format the timestamp
 	timeFormat := func(timestamp time.Time, encode zapcore.PrimitiveArrayEncoder) {
 		encode.AppendString(timestamp.Format(time.RFC3339))
@@ -57,7 +61,7 @@ func init() {
 func getLogPathFromEnv() string {
 	logPath := os.Getenv("LOG_PATH")
 	if logPath == "" {
-		logPath = "./logs/travelis.log"
+		logPath = "./logs/app.log"
 	}
 
 	// Sanitize the log path

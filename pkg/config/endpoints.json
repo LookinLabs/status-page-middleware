@@ -56,12 +56,12 @@
         "type": "dns"
     },
     {
-        "name": "Api TCP Check",
+        "name": "Api Fail TCP Check",
         "url": "http://localhost:8081/ping",
         "type": "tcp"
     },
     {
-        "name": "Api 2 TCP Check",
+        "name": "Api 2 Fail TCP Check",
         "url": "http://localhost:8082/ping",
         "type": "tcp"
     }
