@@ -1,10 +1,9 @@
-package tests
+package checks
 
 import (
 	"sync"
 	"testing"
 
-	"github.com/lookinlabs/status-page-middleware/pkg/checks"
 	"github.com/lookinlabs/status-page-middleware/pkg/model"
 )
 
@@ -29,21 +28,21 @@ func TestChecks(testCase *testing.T) {
 			Username: "your_username",
 			Password: "your_password",
 		}
-		status, _ := checks.HTTP("http://localhost:8080/ping", method, headers, body, basicAuth)
+		status, _ := HTTP("http://localhost:8080/ping", method, headers, body, basicAuth)
 		if status != "up" && status != "down" {
 			httpCase.Errorf("Expected status to be 'up' or 'down', got %s", status)
 		}
 	})
 
 	runTest("DNS Check", func(dnsCase *testing.T) {
-		status, _ := checks.DNS("http://localhost:3000/ping")
+		status, _ := DNS("http://localhost:3000/ping")
 		if status != "up" && status != "down" {
 			dnsCase.Errorf("Expected status to be 'up' or 'down', got %s", status)
 		}
 	})
 
 	runTest("TCP Check", func(tcpCase *testing.T) {
-		status, _ := checks.TCP("http://localhost:3000")
+		status, _ := TCP("http://localhost:3000")
 		if status != "up" && status != "down" {
 			tcpCase.Errorf("Expected status to be 'up' or 'down', got %s", status)
 		}
