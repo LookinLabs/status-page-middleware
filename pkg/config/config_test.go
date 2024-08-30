@@ -3,13 +3,31 @@ package config
 import (
 	"os"
 	"path/filepath"
+	"sync"
 	"testing"
 
 	"github.com/lookinlabs/status-page-middleware/pkg/helpers"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestLoadStatusPage(test *testing.T) {
+func TestConfig(test *testing.T) {
+	var wg sync.WaitGroup
+	wg.Add(2) // We have two tests to run in parallel
+
+	go func() {
+		defer wg.Done()
+		testLoadStatusPage(test)
+	}()
+
+	go func() {
+		defer wg.Done()
+		testLoadEndpoints(test)
+	}()
+
+	wg.Wait()
+}
+
+func testLoadStatusPage(test *testing.T) {
 	// Set up environment variables for testing
 	envVars := map[string]string{
 		"STATUS_PAGE_CONFIG_PATH":   "testdata/endpoints.json",
@@ -25,7 +43,7 @@ func TestLoadStatusPage(test *testing.T) {
 	assert.Equal(test, "/teststatus", env.StatusPagePath)
 }
 
-func TestLoadEndpoints(test *testing.T) {
+func testLoadEndpoints(test *testing.T) {
 	// Create a temporary JSON file for testing
 	testFilePath := filepath.Join(os.TempDir(), "test_endpoints.json")
 	testData := `[

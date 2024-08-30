@@ -5,7 +5,6 @@ go 1.22.3
 require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/goccy/go-json v0.10.3
-	github.com/golang/mock v1.6.0
 	github.com/joho/godotenv v1.5.1
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.9.0
