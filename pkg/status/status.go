@@ -7,41 +7,44 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/lookinlabs/status-page-middleware/pkg/checks"
 	"github.com/lookinlabs/status-page-middleware/pkg/config"
-	json "github.com/lookinlabs/status-page-middleware/pkg/json"
+	"github.com/lookinlabs/status-page-middleware/pkg/json"
 	"github.com/lookinlabs/status-page-middleware/pkg/logger"
 	"github.com/lookinlabs/status-page-middleware/pkg/model"
 )
 
 func Services(_ *config.Environments, services []model.Service, ctx *gin.Context) {
-	for each := range services {
-		checkService(&services[each])
+	var waitGroup sync.WaitGroup
+
+	for i := range services {
+		service := &services[i] // use pointer to the service object
+		waitGroup.Add(1)
+		go func(service *model.Service) {
+			defer waitGroup.Done()
+			checkService(service)
+		}(service)
 	}
 
-	ctx.HTML(http.StatusOK, "status.html", gin.H{
-		"services": services,
-	})
+	waitGroup.Wait()
+
+	if ctx != nil {
+		ctx.HTML(http.StatusOK, "status.html", gin.H{
+			"services": services,
+		})
+	}
 }
 
 func checkService(service *model.Service) {
-	var waitGroup sync.WaitGroup
-	waitGroup.Add(1)
-
-	go func() {
-		defer waitGroup.Done()
-		switch service.Type {
-		case "http":
-			checkHTTPService(service)
-		case "dns":
-			checkDNSService(service)
-		case "tcp":
-			checkTCPService(service)
-		default:
-			service.Status = "unknown"
-			service.Error = "unknown service type"
-		}
-	}()
-
-	waitGroup.Wait()
+	switch service.Type {
+	case "http":
+		checkHTTPService(service)
+	case "dns":
+		checkDNSService(service)
+	case "tcp":
+		checkTCPService(service)
+	default:
+		service.Status = "unknown"
+		service.Error = "unknown service type"
+	}
 }
 
 func checkHTTPService(service *model.Service) {
