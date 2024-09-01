@@ -14,16 +14,17 @@ The unique functionality of this status page is that it can be used for any appl
 
 ## Roadmap
 
-- Add embed support for the status page template
+- Add embed support for the status page template [x]
 - Add more advanced health checks
     - Health checks with Authentication
         - Basic Auth [x]
-        - Bearer Token [ ]
-        - Custom Header [ ]
+        - X-API-Key method [ ]
+        - Bearer Authorization Header [x]
     - Health checks with Custom Headers [x]
     - Health checks via API Request against the endpoints [x]
 - Add support for more protocols
-    - HTTPS
+    - RDP
+    - NTP
     - FTP
     - SSH
     - WebSocket
