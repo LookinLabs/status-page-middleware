@@ -7,7 +7,7 @@ require (
 	github.com/goccy/go-json v0.10.3
 	github.com/joho/godotenv v1.5.1
 	github.com/spf13/viper v1.19.0
-	github.com/stretchr/testify v1.9.0
+	github.com/stretchr/testify v1.10.0
 	go.uber.org/zap v1.27.0
 )
 
