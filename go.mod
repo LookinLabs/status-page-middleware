@@ -1,10 +1,11 @@
 module github.com/lookinlabs/status-page-middleware
 
-go 1.22.3
+go 1.23.0
+
 toolchain go1.24.1
 
 require (
-	github.com/gin-gonic/gin v1.10.0
+	github.com/gin-gonic/gin v1.10.1
 	github.com/goccy/go-json v0.10.5
 	github.com/joho/godotenv v1.5.1
 	github.com/spf13/viper v1.20.1
